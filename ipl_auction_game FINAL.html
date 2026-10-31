@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Mega Auction — Playing XI Stats-Based Championship</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 18px;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            text-align: center;
+            background: linear-gradient(135deg, #0b132b, #1c2541, #3a506b);
+        }
+
+        h1 {
+            color: #ffcc00;
+            margin: 0 0 4px 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #cfd8dc;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .container {
+            max-width: 1020px;
+            margin: 15px auto;
+            padding: 22px;
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Lock Gate Container */
+        .lock-gate {
+            max-width: 520px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 18px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .lock-icon-circle {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px auto;
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        /* Role Selector Tabs */
+        .role-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-tab-btn {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #e2e8f0;
+            color: #475569;
+            border: 2px solid transparent;
+            cursor: pointer;
+            box-shadow: none;
+            transition: all 0.2s;
+        }
+
+        .role-tab-btn.active {
+            background: #1e3a8a;
+            color: #fff;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .form-control,
+        select,
+        input[type="text"],
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-control:focus,
+        select:focus,
+        input:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.25);
+            background: #fff;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: 0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #ff9800;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.25);
+        }
+
+        button:hover {
+            background: #e68900;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-neutral {
+            background: #475569;
+        }
+
+        .btn-neutral:hover {
+            background: #334155;
+        }
+
+        .btn-sim {
+            background: #7c3aed;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-sim:hover {
+            background: #6d28d9;
+        }
+
+        .btn-share {
+            background: #0284c7;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-share:hover {
+            background: #0369a1;
+        }
+
+        .btn-crown {
+            background: #f59e0b;
+            color: #1e293b;
+            font-weight: 900;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-crown:hover {
+            background: #d97706;
+        }
+
+        /* Manager Registration List */
+        .managers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            background: #f8fafc;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .managers-table th {
+            background: #1e3a8a;
+            color: #fff;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .managers-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-team {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-ind {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .badge-rating {
+            background: #fef08a;
+            color: #854d0e;
+            font-weight: 800;
+        }
+
+        .badge-host {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .badge-bidder {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .badge-winner {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1.5px solid #f59e0b;
+            font-weight: 900;
+        }
+
+        /* Top Control Banner */
+        .status-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Live Playing XI Championship Leaderboard Banner */
+        .leaderboard-banner {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            text-align: left;
+            box-shadow: 0 6px 18px rgba(30, 27, 75, 0.3);
+            border: 1px solid #4338ca;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .leaderboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .leaderboard-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .leaderboard-card.rank-1 {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: #f59e0b;
+        }
+
+        /* Auction Arena Layout */
+        .arena-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        @media (max-width: 880px) {
+            .arena-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Active Player Card with Authentic IPL Stats */
+        .player-card {
+            background: linear-gradient(135deg, #172554, #1e3a8a);
+            color: #fff;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(23, 37, 84, 0.25);
+            position: relative;
+            text-align: left;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .player-card h2 {
+            margin: 2px 0;
+            font-size: 26px;
+            color: #facc15;
+        }
+
+        .player-badge-ovr {
+            background: #facc15;
+            color: #1e293b;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Authentic IPL Performance Stat Box */
+        .player-stats-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0 6px 0;
+        }
+
+        .stats-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .stat-chip {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 4px;
+            border-radius: 6px;
+        }
+
+        .stat-chip span {
+            display: block;
+            font-size: 10px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+        }
+
+        .stat-chip strong {
+            display: block;
+            font-size: 14px;
+            color: #38bdf8;
+            margin-top: 2px;
+        }
+
+        .special-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(250, 204, 21, 0.2);
+            color: #fde047;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            border-radius: 6px;
+            padding: 3px 8px;
+            margin-top: 6px;
+        }
+
+        /* Bidding Hero */
+        .bid-hero {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+        }
+
+        .bid-hero div {
+            font-size: 12px;
+        }
+
+        .bid-hero strong {
+            display: block;
+            font-size: 20px;
+            color: #38bdf8;
+            margin-top: 2px;
+        }
+
+        /* Timer Bar */
+        .timer-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0 6px 0;
+        }
+
+        .timer-bar {
+            background: #22c55e;
+            height: 100%;
+            width: 100%;
+            transition: width 1s linear, background-color 0.3s;
+        }
+
+        /* Host Controls Box */
+        .host-control-deck {
+            background: #fff;
+            color: #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 2px solid #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .host-deck-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #b91c1c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .host-deck-section {
+            border-top: 1px solid #fee2e2;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .host-deck-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7f1d1d;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 6px;
+        }
+
+        .host-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .host-input-row input,
+        .host-input-row select {
+            flex: 1;
+            min-width: 90px;
+            padding: 7px 9px;
+            border: 1.5px solid #fca5a5;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff5f5;
+            color: #1e293b;
+        }
+
+        .host-input-row input:focus,
+        .host-input-row select:focus {
+            border-color: #ef4444;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-host-sm {
+            padding: 7px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            background: #dc2626;
+            color: #fff;
+            font-weight: bold;
+            border: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: none;
+            white-space: nowrap;
+        }
+
+        .btn-host-sm:hover {
+            background: #b91c1c;
+        }
+
+        .btn-host-sm.blue {
+            background: #0284c7;
+        }
+
+        .btn-host-sm.blue:hover {
+            background: #0369a1;
+        }
+
+        .btn-host-sm.green {
+            background: #16a34a;
+        }
+
+        .btn-host-sm.green:hover {
+            background: #15803d;
+        }
+
+        .btn-host-sm.amber {
+            background: #d97706;
+        }
+
+        .btn-host-sm.amber:hover {
+            background: #b45309;
+        }
+
+        /* Candidate Notice */
+        .candidate-restricted-notice {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* Franchise Bidding Paddles Grid */
+        .franchises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .franchise-card {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: left;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .franchise-card.leading {
+            border-color: #22c55e;
+            background: #f0fdf4;
+            box-shadow: 0 0 0 2px #22c55e;
+        }
+
+        .franchise-card.my-team {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .franchise-card h4 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .franchise-meta {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .franchise-strength {
+            font-size: 12px;
+            font-weight: bold;
+            color: #7c3aed;
+            background: #ede9fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .franchise-purse {
+            font-weight: bold;
+            color: #15803d;
+            font-size: 13px;
+        }
+
+        .btn-paddle {
+            width: 100%;
+            padding: 9px;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .btn-paddle.holding {
+            background: #16a34a;
+            cursor: default;
+        }
+
+        .btn-paddle.locked {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Live Feed & Commentary */
+        .feed-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+            height: 160px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 13px;
+            border: 1px solid #334155;
+        }
+
+        .feed-entry {
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .feed-entry.bid {
+            color: #facc15;
+        }
+
+        .feed-entry.sold {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .feed-entry.unsold {
+            color: #f87171;
+        }
+
+        /* Squad & Leaderboard */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            background: #e2e8f0;
+            color: #334155;
+            box-shadow: none;
+            margin: 0;
+        }
+
+        .tab-btn.active {
+            background: #1e3a8a;
+            color: #fff;
+        }
+
+        .error-text {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🏏 IPL MEGA AUCTION</h1>
+    <div class="subtitle">Playing XI Championship Arena — Winner Decided by Best Player Stats</div>
+
+    <!-- SECURITY ACCESS GATE (SHOWN IF OPENED WITHOUT INVITATION) -->
+    <main class="lock-gate" id="lockGateScreen">
+        <div class="lock-icon-circle">🔒</div>
+        <h2 style="margin: 0 0 8px 0; color: #0f172a; font-size: 22px;">Private Auction Hall</h2>
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 22px;">
+            This auction is <strong>private and invite-only</strong>. Only candidates with the link from Charan Yadav
+            (Host)
+            can participate.
+        </p>
+
+        <div style="background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
+            <div class="form-group" style="text-align: left;">
+                <label for="roomAccessInput">Enter Room Passcode *</label>
+                <input type="password" id="roomAccessInput" placeholder="Enter private passcode" autocomplete="off">
+                <small style="color: #64748b; font-size: 12px;">(If you opened the shared invite link, this unlocks
+                    automatically)</small>
+            </div>
+            <div id="lockGateError" class="error-text">❌ Invalid Room Passcode! Access Denied.</div>
+            <div style="margin-top: 16px;">
+                <button type="button" class="btn-success" onclick="verifyRoomAccess()"
+                    style="width: 100%; font-size: 16px;">
+                    🔓 Unlock Auction Hall
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- REGISTRATION / LOGIN LOBBY (SHOWN ONCE UNLOCKED) -->
+    <main class="container" id="lobbyScreen" style="display: none;">
+        <!-- Host Invite Sharing Box -->
+        <div
+            style="background: #e0f2fe; border: 1.5px solid #7dd3fc; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; text-align: left; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 13px; color: #0369a1;">
+                🔐 <strong>Invite-Only Active:</strong> Room Passcode: <strong style="color: #0c4a6e;">IPL2026</strong>.
+                <span style="color: #15803d; font-weight: bold; margin-left: 6px;">🏆 Winner decided by highest Playing
+                    11
+                    statistical score!</span>
+            </div>
+            <div>
+                <button type="button" class="btn-share" onclick="copyPrivateInviteLink()"
+                    style="font-size: 12px; padding: 6px 14px;">
+                    🔗 Copy 1-Click Private Invite Link
+                </button>
+            </div>
+        </div>
+
+        <!-- Role Selection Tabs -->
+        <div class="role-tabs">
+            <button type="button" class="role-tab-btn active" id="tabCandidateRole"
+                onclick="switchLoginMode('CANDIDATE')">
+                🏏 Candidate Bidder Registration
+            </button>
+            <button type="button" class="role-tab-btn" id="tabHostRole" onclick="switchLoginMode('HOST')">
+                👑 Host / Auctioneer Master Login
+            </button>
+        </div>
+
+        <!-- 1. CANDIDATE LOGIN FORM -->
+        <div id="candidateLoginForm">
+            <h2>📋 Candidate Registration & Franchise Selection</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 18px;">
+                Register to manage your franchise! Buy players with the best IPL statistics to win the championship!
+            </p>
+
+            <div
+                style="background: #f1f5f9; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 580px; margin: 0 auto;">
+                <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+                    <label for="candName">Candidate Name *</label>
+                    <input type="text" id="candName" placeholder="e.g. Charan Yadav" autocomplete="name">
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+                    <label for="candPhone">Phone Number *</label>
+                    <input type="tel" id="candPhone" placeholder="10-digit mobile number" maxlength="10"
+                        autocomplete="tel">
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+                    <label for="candTeam">Select Your Franchise *</label>
+                    <select id="candTeam">
+                        <option value="CSK">Chennai Super Kings (CSK)</option>
+                        <option value="MI">Mumbai Indians (MI)</option>
+                        <option value="RCB">Royal Challengers Bengaluru (RCB)</option>
+                        <option value="KKR">Kolkata Knight Riders (KKR)</option>
+                        <option value="SRH">Sunrisers Hyderabad (SRH)</option>
+                        <option value="RR">Rajasthan Royals (RR)</option>
+                        <option value="DC">Delhi Capitals (DC)</option>
+                        <option value="PBKS">Punjab Kings (PBKS)</option>
+                        <option value="GT">Gujarat Titans (GT)</option>
+                        <option value="LSG">Lucknow Super Giants (LSG)</option>
+                    </select>
+                </div>
+                <div id="candError" class="error-text">Please enter a valid candidate name and 10-digit phone number.
+                </div>
+
+                <div style="margin-top: 16px; display: flex; gap: 8px;">
+                    <button type="button" class="btn-neutral" onclick="addCandidateToRoom()"
+                        style="flex: 1; font-size: 14px;">
+                        ➕ Register Candidate
+                    </button>
+                    <button type="button" class="btn-success" onclick="loginAndEnterAuction()"
+                        style="flex: 1.2; font-size: 14px;">
+                        🚀 Register & Enter Room
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. HOST / AUCTIONEER LOGIN FORM -->
+        <div id="hostLoginForm" style="display: none;">
+            <h2>👑 Host / Auctioneer Master Console</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 18px;">
+                Only the Host can drop the gavel, pass players, control the 30-second timer, and officially crown the
+                winner.
+            </p>
+
+            <div
+                style="background: #fff1f2; padding: 18px; border-radius: 12px; border: 2px solid #fda4af; max-width: 520px; margin: 0 auto;">
+                <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+                    <label for="hostName">Host / Auctioneer Name *</label>
+                    <input type="text" id="hostName" value="Charan Yadav (Host)" placeholder="Host Name">
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+                    <label for="hostPin">Master Host Security PIN *</label>
+                    <input type="password" id="hostPin" placeholder="Default PIN is 1234">
+                    <small style="color: #64748b;">Default Host PIN is <strong>1234</strong> (only you know
+                        this)</small>
+                </div>
+                <div id="hostError" class="error-text">Incorrect Host PIN! Default is 1234.</div>
+
+                <div style="margin-top: 16px;">
+                    <button type="button" class="btn-danger" onclick="loginHost()"
+                        style="width: 100%; font-size: 16px;">
+                        🔒 Enter as Master Controller (Host)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered Teams Summary in Lobby -->
+        <div style="margin-top: 28px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="font-size: 15px; color: #334155; margin: 0;">
+                    👥 Candidates Joined via Link (<span id="candidateCount">0</span>)
+                </h3>
+                <button type="button" class="btn-success" id="startRoomBtn" onclick="enterAuctionRoom()"
+                    style="font-size: 13px; padding: 6px 14px;">
+                    🚀 Enter Auction Arena ➡
+                </button>
+            </div>
+            <table class="managers-table">
+                <thead>
+                    <tr>
+                        <th>Franchise</th>
+                        <th>Candidate Name</th>
+                        <th>Phone Number</th>
+                        <th>Purse</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="candidatesList">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #64748b; padding: 16px;">
+                            No candidates registered yet. Enter candidate details above or share the link!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- LIVE AUCTION ARENA -->
+    <main class="container" id="auctionArena" style="display: none;">
+        <!-- Top Status Banner showing active user role -->
+        <div class="status-banner">
+            <div>
+                <strong>🏏 Live IPL Mega Auction</strong> • <span id="auctionRoundText">Round 1: Marquee Set</span>
+                <span class="badge badge-winner" style="margin-left: 6px;">🏆 Playing XI Stats Championship</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" class="btn-crown" onclick="decideWinnerAndAnnounce()"
+                    style="font-size: 11px; padding: 5px 12px;">
+                    👑 Decide Winner
+                </button>
+                <button type="button" class="btn-share" onclick="copyPrivateInviteLink()"
+                    style="font-size: 11px; padding: 4px 10px;">
+                    🔗 Copy Link
+                </button>
+                <span id="userRoleBadge" class="badge badge-bidder">👤 Candidate: Charan</span>
+                <button type="button" class="btn-neutral" onclick="logoutToLobby()"
+                    style="font-size: 11px; padding: 4px 10px;">
+                    Exit / Lobby
+                </button>
+            </div>
+        </div>
+
+        <!-- LIVE CHAMPIONSHIP LEADERBOARD BANNER (WHO HAS THE BEST PLAYING 11) -->
+        <section class="leaderboard-banner" id="leaderboardBanner">
+            <div class="leaderboard-header">
+                <div>
+                    <strong style="color: #facc15; font-size: 15px;">🏆 Live Playing XI Stats Leaderboard</strong>
+                    <span style="font-size: 12px; color: #cbd5e1; margin-left: 8px;">(Ranked by Player Stats: Runs,
+                        Wickets, SR &
+                        OVR)</span>
+                </div>
+                <div id="leaderHighlight" style="font-weight: bold; color: #4ade80; font-size: 13px;">
+                    🥇 Leader: No purchases yet
+                </div>
+            </div>
+            <div class="leaderboard-grid" id="leaderboardGrid">
+                <!-- Live rank cards populated dynamically -->
+            </div>
+        </section>
+
+        <div class="arena-grid">
+            <!-- LEFT: Active Player with Stats & Controls -->
+            <div>
+                <section class="player-card">
+                    <div class="player-header">
+                        <div>
+                            <span class="badge badge-ind" id="playerOriginTag">🇮🇳 INDIA</span>
+                            <span class="badge" id="playerRoleTag"
+                                style="background: rgba(255,255,255,0.2); color: #fff;">BATSMAN</span>
+                            <span class="badge" id="playerSetTag"
+                                style="background: #f59e0b; color: #1e293b;">MARQUEE</span>
+                        </div>
+                        <div class="player-badge-ovr" id="playerOvr">★ 97 OVR</div>
+                    </div>
+
+                    <h2 id="playerName">Virat Kohli</h2>
+                    <div style="font-size: 13px; color: #cbd5e1;" id="playerSubText">Right-handed Batsman • India</div>
+                    <div class="special-badge" id="playerSpecialBadge">🔥 All-Time Highest IPL Run Scorer (8,004 Runs)
+                    </div>
+
+                    <!-- Official Stats -->
+                    <div class="player-stats-box">
+                        <div class="stats-title">
+                            <span>📊 Official IPL Performance Stats</span>
+                            <span id="playerRoleLabel" style="color: #38bdf8;">BATSMAN</span>
+                        </div>
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <!-- Bidding Numbers -->
+                    <div class="bid-hero">
+                        <div>
+                            <span>Base Price</span>
+                            <strong id="basePrice">₹2.00 Cr</strong>
+                        </div>
+                        <div>
+                            <span>Current Highest Bid</span>
+                            <strong id="currentBid" style="color: #facc15;">₹2.00 Cr</strong>
+                        </div>
+                        <div>
+                            <span>Leading Franchise</span>
+                            <strong id="leadingTeam" style="color: #4ade80;">None</strong>
+                        </div>
+                    </div>
+
+                    <!-- Timer Bar (30 Seconds Countdown) -->
+                    <div style="margin-top: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span id="timerStatus">Hammer Countdown (30s)</span>
+                            <span id="timerSeconds"><strong>0:30</strong></span>
+                        </div>
+                        <div class="timer-bar-container">
+                            <div id="timerBar" class="timer-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- MASTER HOST CONTROLS (Only visible to the HOST!) -->
+                    <div id="hostControlDeck" class="host-control-deck" style="display: none;">
+                        <div class="host-deck-title">
+                            <span>👑 Host Auctioneer Master Controls</span>
+                            <span>Exclusive Access</span>
+                        </div>
+
+                        <!-- Row 1: Primary Gavel Actions -->
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <button type="button" class="btn-success" onclick="sellPlayerToHighestBidder()">
+                                🔨 Hammer Down / Sell Player
+                            </button>
+                            <button type="button" class="btn-danger" onclick="passPlayerUnsold()">
+                                Pass Unsold ➡
+                            </button>
+                            <button type="button" class="btn-neutral" id="pauseTimerBtn" onclick="toggleTimer()">
+                                ⏸ Pause Timer
+                            </button>
+                            <button type="button" class="btn-crown" onclick="decideWinnerAndAnnounce()">
+                                🏆 Decide &amp; Crown Winner
+                            </button>
+                        </div>
+
+                        <!-- Row 2: Timer Controls -->
+                        <div class="host-deck-section">
+                            <div class="host-deck-section-title">⏱ Timer Controls</div>
+                            <div class="host-input-row">
+                                <button type="button" class="btn-host-sm amber" onclick="extendTimer(15)"
+                                    title="Add 15 seconds to clock">+15s</button>
+                                <button type="button" class="btn-host-sm amber" onclick="extendTimer(30)"
+                                    title="Add 30 seconds to clock">+30s</button>
+                                <button type="button" class="btn-host-sm blue" onclick="resetHammerCountdown()"
+                                    title="Restart the full countdown">🔄 Restart Clock</button>
+                                <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:130px;">
+                                    <label
+                                        style="font-size:11px; font-weight:600; white-space:nowrap; color:#7f1d1d;">Set
+                                        secs:</label>
+                                    <input type="number" id="customTimerInput" min="5" max="120" value="30"
+                                        style="width:60px;">
+                                    <button type="button" class="btn-host-sm" onclick="setCustomTimer()"
+                                        title="Apply custom timer value">Set</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Manual Bid Override -->
+                        <div class="host-deck-section">
+                            <div class="host-deck-section-title">💰 Manual Bid Override</div>
+                            <div class="host-input-row">
+                                <select id="hostBidTeamSelect" style="flex:1.2;">
+                                    <option value="">— Select Franchise —</option>
+                                </select>
+                                <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:130px;">
+                                    <label style="font-size:11px; font-weight:600; white-space:nowrap; color:#7f1d1d;">₹
+                                        Cr:</label>
+                                    <input type="number" id="hostBidAmount" min="0.5" step="0.5" placeholder="e.g. 5.5"
+                                        style="width:80px;">
+                                </div>
+                                <button type="button" class="btn-host-sm green" onclick="hostPlaceManualBid()"
+                                    title="Force a bid for the selected team at the given amount">✅ Force Bid</button>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Player Navigation -->
+                        <div class="host-deck-section">
+                            <div class="host-deck-section-title">🔀 Player Navigation</div>
+                            <div class="host-input-row">
+                                <button type="button" class="btn-host-sm blue" onclick="hostGoToPrevPlayer()"
+                                    title="Go back to previous player">⬅ Prev Player</button>
+                                <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:140px;">
+                                    <label
+                                        style="font-size:11px; font-weight:600; white-space:nowrap; color:#7f1d1d;">Jump
+                                        to #:</label>
+                                    <input type="number" id="jumpPlayerInput" min="1" max="28" value=""
+                                        placeholder="1-28" style="width:60px;">
+                                    <button type="button" class="btn-host-sm" onclick="hostJumpToPlayer()"
+                                        title="Jump to a specific player number">Go</button>
+                                </div>
+                                <button type="button" class="btn-host-sm green" onclick="hostRelistCurrentPlayer()"
+                                    title="Re-list current player fresh (clears bids)">🔄 Re-list Current</button>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Base Price Adjustment -->
+                        <div class="host-deck-section">
+                            <div class="host-deck-section-title">🏷 Adjust Current Player Base Price</div>
+                            <div class="host-input-row">
+                                <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:160px;">
+                                    <label
+                                        style="font-size:11px; font-weight:600; white-space:nowrap; color:#7f1d1d;">New
+                                        Base (₹
+                                        Cr):</label>
+                                    <input type="number" id="newBasePriceInput" min="0.5" step="0.5"
+                                        placeholder="e.g. 3.0" style="width:80px;">
+                                </div>
+                                <button type="button" class="btn-host-sm amber" onclick="hostSetBasePrice()"
+                                    title="Override base price of the current player">Apply Base Price</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CANDIDATE RESTRICTED NOTICE (Visible when logged in as candidate) -->
+                    <div id="candidateNotice" class="candidate-restricted-notice" style="display: none;">
+                        🔒 <strong>Auction Pace Controlled by Host:</strong> Only the Host can drop the gavel or pass
+                        players. Press
+                        your franchise paddle button on the right to place bids!
+                    </div>
+                </section>
+
+                <!-- Live Commentary Feed -->
+                <h4 style="text-align: left; margin: 12px 0 6px 0; color: #334155;">🎙️ Live Auction Bidding Feed</h4>
+                <div class="feed-box" id="feedBox">
+                    <div class="feed-entry">🎙️ Auctioneer: Welcome candidates! Live auction is underway. Winner will be
+                        decided
+                        by Playing XI player stats!</div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Bidding Paddles for Joined Candidates ONLY -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 style="margin: 0; font-size: 16px; color: #1e293b;">Joined Franchise Paddles</h3>
+                    <span style="font-size: 12px; color: #64748b;" id="paddleInstructions">Click your paddle to raise
+                        bid</span>
+                </div>
+
+                <div class="franchises-grid" id="paddlesGrid">
+                    <!-- Dynamically populated ONLY with candidates who joined -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Squads View -->
+        <section
+            style="margin-top: 20px; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 16px; color: #1e293b;">📊 Joined Franchise Squads & Ratings</h3>
+                <span id="auctionProgressCounter" style="font-size: 13px; color: #64748b;">Player 1 of 28</span>
+            </div>
+
+            <div class="tab-bar" id="franchiseTabs">
+                <!-- Tabs -->
+            </div>
+
+            <div id="squadDisplay"
+                style="max-height: 250px; overflow-y: auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+                <!-- Squad items -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Security & Room Access Code
+        const ROOM_ACCESS_CODE = "IPL2026";
+        let isRoomUnlocked = false;
+
+        // 10 Official IPL Franchises Names Mapping
+        const FRANCHISE_NAMES = {
+            "CSK": "Chennai Super Kings",
+            "MI": "Mumbai Indians",
+            "RCB": "Royal Challengers Bengaluru",
+            "KKR": "Kolkata Knight Riders",
+            "SRH": "Sunrisers Hyderabad",
+            "RR": "Rajasthan Royals",
+            "DC": "Delhi Capitals",
+            "PBKS": "Punjab Kings",
+            "GT": "Gujarat Titans",
+            "LSG": "Lucknow Super Giants"
+        };
+
+        // 28 Official Auction Players with Authentic IPL Career Stats & Performance Ratings
+        const players = [
+            {
+                name: "Virat Kohli", role: "Batsman", origin: "IND", isOverseas: false, price: 2.0, set: "Marquee",
+                ovr: 97, tag: "🔥 All-Time Highest IPL Run Scorer (8,004 Runs)",
+                runs: 8004, wickets: 4, sr: 131.9, econ: 8.8,
+                stats: [
+                    { label: "Matches", val: "252" },
+                    { label: "Runs", val: "8,004" },
+                    { label: "Avg", val: "38.6" },
+                    { label: "SR", val: "131.9" },
+                    { label: "100s / 50s", val: "8 / 55" },
+                    { label: "High Score", val: "113" },
+                    { label: "Bat Rating", val: "98 ★" },
+                    { label: "Form", val: "Elite" }
+                ]
+            },
+            {
+                name: "Jasprit Bumrah", role: "Bowler", origin: "IND", isOverseas: false, price: 2.0, set: "Marquee",
+                ovr: 98, tag: "🎯 Best Economy in Death Overs (7.30)",
+                runs: 63, wickets: 165, sr: 95.0, econ: 7.30,
+                stats: [
+                    { label: "Matches", val: "133" },
+                    { label: "Wickets", val: "165" },
+                    { label: "Economy", val: "7.30" },
+                    { label: "Bowl Avg", val: "22.5" },
+                    { label: "Best Bowl", val: "5/10" },
+                    { label: "Dot %", val: "51.4%" },
+                    { label: "Bowl Rating", val: "99 ★" },
+                    { label: "Form", val: "Supreme" }
+                ]
+            },
+            {
+                name: "Rohit Sharma", role: "Batsman", origin: "IND", isOverseas: false, price: 2.0, set: "Marquee",
+                ovr: 94, tag: "🏆 5-Time IPL Winning Captain & Opener",
+                runs: 6628, wickets: 15, sr: 131.1, econ: 8.0,
+                stats: [
+                    { label: "Matches", val: "257" },
+                    { label: "Runs", val: "6,628" },
+                    { label: "Avg", val: "29.7" },
+                    { label: "SR", val: "131.1" },
+                    { label: "100s / 50s", val: "2 / 43" },
+                    { label: "High Score", val: "109*" },
+                    { label: "Bat Rating", val: "93 ★" },
+                    { label: "Form", val: "Aggressive" }
+                ]
+            },
+            {
+                name: "Hardik Pandya", role: "All Rounder", origin: "IND", isOverseas: false, price: 2.0, set: "Marquee",
+                ovr: 93, tag: "⚡ Fast-Bowling All-Rounder (145.8 SR)",
+                runs: 2525, wickets: 64, sr: 145.8, econ: 8.80,
+                stats: [
+                    { label: "Matches", val: "137" },
+                    { label: "Runs", val: "2,525" },
+                    { label: "Bat SR", val: "145.8" },
+                    { label: "Wickets", val: "64" },
+                    { label: "Economy", val: "8.80" },
+                    { label: "Best Bowl", val: "3/17" },
+                    { label: "AR Rating", val: "93 ★" },
+                    { label: "Impact", val: "Clutch" }
+                ]
+            },
+            {
+                name: "Travis Head", role: "Batsman", origin: "AUS", isOverseas: true, price: 2.0, set: "Marquee",
+                ovr: 95, tag: "🚀 Powerplay Monster (178.6 Career SR)",
+                runs: 825, wickets: 5, sr: 178.6, econ: 9.1,
+                stats: [
+                    { label: "Matches", val: "25" },
+                    { label: "Runs", val: "825" },
+                    { label: "Avg", val: "41.2" },
+                    { label: "SR", val: "178.6" },
+                    { label: "100s / 50s", val: "1 / 5" },
+                    { label: "PP SR", val: "205.2" },
+                    { label: "Bat Rating", val: "96 ★" },
+                    { label: "Form", val: "Explosive" }
+                ]
+            },
+            {
+                name: "Rishabh Pant", role: "Wicket Keeper", origin: "IND", isOverseas: false, price: 2.0, set: "Marquee",
+                ovr: 94, tag: "🧤 Dynamic Keeper-Batter (148.9 SR)",
+                runs: 3284, wickets: 0, sr: 148.9, econ: 0,
+                stats: [
+                    { label: "Matches", val: "111" },
+                    { label: "Runs", val: "3,284" },
+                    { label: "Avg", val: "35.3" },
+                    { label: "SR", val: "148.9" },
+                    { label: "100s / 50s", val: "1 / 18" },
+                    { label: "Dismissals", val: "88" },
+                    { label: "WK Rating", val: "94 ★" },
+                    { label: "Impact", val: "Game Changer" }
+                ]
+            },
+            {
+                name: "Rashid Khan", role: "Bowler", origin: "AFG", isOverseas: true, price: 2.0, set: "Marquee",
+                ovr: 97, tag: "🌀 World's #1 T20 Spinner (6.82 Econ)",
+                runs: 545, wickets: 149, sr: 155.4, econ: 6.82,
+                stats: [
+                    { label: "Matches", val: "121" },
+                    { label: "Wickets", val: "149" },
+                    { label: "Economy", val: "6.82" },
+                    { label: "Bowl Avg", val: "21.8" },
+                    { label: "Best Bowl", val: "4/24" },
+                    { label: "Bat SR", val: "155.4" },
+                    { label: "Bowl Rating", val: "98 ★" },
+                    { label: "Form", val: "Magician" }
+                ]
+            },
+            {
+                name: "Heinrich Klaasen", role: "Wicket Keeper", origin: "SA", isOverseas: true, price: 2.0, set: "Keepers",
+                ovr: 95, tag: "💥 Deadliest Spin Basher (171.2 SR)",
+                runs: 993, wickets: 0, sr: 171.2, econ: 0,
+                stats: [
+                    { label: "Matches", val: "35" },
+                    { label: "Runs", val: "993" },
+                    { label: "Avg", val: "39.7" },
+                    { label: "SR", val: "171.2" },
+                    { label: "100s / 50s", val: "1 / 6" },
+                    { label: "Sixes", val: "65" },
+                    { label: "WK Rating", val: "95 ★" },
+                    { label: "Form", val: "Lethal" }
+                ]
+            },
+            {
+                name: "Ravindra Jadeja", role: "All Rounder", origin: "IND", isOverseas: false, price: 2.0, set: "All-Rounders",
+                ovr: 94, tag: "🛡️ 160 Wickets & 2,900+ Runs Legend",
+                runs: 2959, wickets: 160, sr: 129.5, econ: 7.60,
+                stats: [
+                    { label: "Matches", val: "240" },
+                    { label: "Runs", val: "2,959" },
+                    { label: "Wickets", val: "160" },
+                    { label: "Economy", val: "7.60" },
+                    { label: "Catches", val: "103" },
+                    { label: "Best Bowl", val: "5/16" },
+                    { label: "AR Rating", val: "94 ★" },
+                    { label: "Form", val: "Rock Solid" }
+                ]
+            },
+            {
+                name: "Mitchell Starc", role: "Bowler", origin: "AUS", isOverseas: true, price: 2.0, set: "Fast Bowlers",
+                ovr: 93, tag: "⚡ Left-Arm Express Inswing Yorker Specialist",
+                runs: 110, wickets: 51, sr: 112.0, econ: 7.98,
+                stats: [
+                    { label: "Matches", val: "41" },
+                    { label: "Wickets", val: "51" },
+                    { label: "Economy", val: "7.98" },
+                    { label: "Bowl Avg", val: "20.3" },
+                    { label: "Best Bowl", val: "4/15" },
+                    { label: "Finals POTM", val: "1" },
+                    { label: "Bowl Rating", val: "93 ★" },
+                    { label: "Form", val: "Big Match Player" }
+                ]
+            },
+            {
+                name: "Shubman Gill", role: "Batsman", origin: "IND", isOverseas: false, price: 2.0, set: "Batsmen",
+                ovr: 94, tag: "👑 Orange Cap Winner (890 Runs Season)",
+                runs: 3216, wickets: 0, sr: 135.8, econ: 0,
+                stats: [
+                    { label: "Matches", val: "103" },
+                    { label: "Runs", val: "3,216" },
+                    { label: "Avg", val: "37.8" },
+                    { label: "SR", val: "135.8" },
+                    { label: "100s / 50s", val: "4 / 20" },
+                    { label: "High Score", val: "129" },
+                    { label: "Bat Rating", val: "94 ★" },
+                    { label: "Form", val: "Consistent" }
+                ]
+            },
+            {
+                name: "Pat Cummins", role: "Bowler", origin: "AUS", isOverseas: true, price: 2.0, set: "Fast Bowlers",
+                ovr: 92, tag: "🏆 World Cup & IPL Finalist Captain",
+                runs: 515, wickets: 63, sr: 151.2, econ: 8.42,
+                stats: [
+                    { label: "Matches", val: "58" },
+                    { label: "Wickets", val: "63" },
+                    { label: "Economy", val: "8.42" },
+                    { label: "Bat SR", val: "151.2" },
+                    { label: "50s", val: "3" },
+                    { label: "Best Bowl", val: "4/34" },
+                    { label: "Bowl Rating", val: "92 ★" },
+                    { label: "Leadership", val: "Elite" }
+                ]
+            },
+            {
+                name: "Suryakumar Yadav", role: "Batsman", origin: "IND", isOverseas: false, price: 2.0, set: "Batsmen",
+                ovr: 96, tag: "🎯 World's #1 360-Degree Batter",
+                runs: 3594, wickets: 0, sr: 145.3, econ: 0,
+                stats: [
+                    { label: "Matches", val: "150" },
+                    { label: "Runs", val: "3,594" },
+                    { label: "Avg", val: "32.1" },
+                    { label: "SR", val: "145.3" },
+                    { label: "100s / 50s", val: "2 / 24" },
+                    { label: "Boundary %", val: "68%" },
+                    { label: "Bat Rating", val: "97 ★" },
+                    { label: "Form", val: "Unstoppable" }
+                ]
+            },
+            {
+                name: "MS Dhoni", role: "Wicket Keeper", origin: "IND", isOverseas: false, price: 2.0, set: "Keepers",
+                ovr: 95, tag: "🐐 5-Time Champion Captain & Legend Finisher",
+                runs: 5243, wickets: 0, sr: 137.5, econ: 0,
+                stats: [
+                    { label: "Matches", val: "264" },
+                    { label: "Runs", val: "5,243" },
+                    { label: "Avg", val: "39.1" },
+                    { label: "Death SR", val: "182.5" },
+                    { label: "Dismissals", val: "190" },
+                    { label: "Stumpings", val: "42 (Record)" },
+                    { label: "WK Rating", val: "96 ★" },
+                    { label: "Legacy", val: "GOAT" }
+                ]
+            },
+            {
+                name: "Andre Russell", role: "All Rounder", origin: "WI", isOverseas: true, price: 2.0, set: "All-Rounders",
+                ovr: 96, tag: "💪 Highest Career Strike Rate in IPL (174.9)",
+                runs: 2484, wickets: 115, sr: 174.9, econ: 9.20,
+                stats: [
+                    { label: "Matches", val: "127" },
+                    { label: "Runs", val: "2,484" },
+                    { label: "SR", val: "174.9" },
+                    { label: "Wickets", val: "115" },
+                    { label: "Sixes", val: "209" },
+                    { label: "Best Bowl", val: "5/15" },
+                    { label: "AR Rating", val: "96 ★" },
+                    { label: "Power", val: "Maximum" }
+                ]
+            },
+            {
+                name: "Glenn Maxwell", role: "All Rounder", origin: "AUS", isOverseas: true, price: 2.0, set: "All-Rounders",
+                ovr: 91, tag: "⚡ The 'Big Show' (156.7 SR & Off-Spin)",
+                runs: 2771, wickets: 37, sr: 156.7, econ: 8.30,
+                stats: [
+                    { label: "Matches", val: "134" },
+                    { label: "Runs", val: "2,771" },
+                    { label: "SR", val: "156.7" },
+                    { label: "50s", val: "18" },
+                    { label: "Wickets", val: "37" },
+                    { label: "Economy", val: "8.30" },
+                    { label: "AR Rating", val: "91 ★" },
+                    { label: "Form", val: "High Impact" }
+                ]
+            },
+            {
+                name: "Sanju Samson", role: "Wicket Keeper", origin: "IND", isOverseas: false, price: 2.0, set: "Keepers",
+                ovr: 92, tag: "🔥 3 IPL Centuries & 4,400+ Runs",
+                runs: 4419, wickets: 0, sr: 138.9, econ: 0,
+                stats: [
+                    { label: "Matches", val: "167" },
+                    { label: "Runs", val: "4,419" },
+                    { label: "Avg", val: "30.7" },
+                    { label: "SR", val: "138.9" },
+                    { label: "100s / 50s", val: "3 / 25" },
+                    { label: "Dismissals", val: "95" },
+                    { label: "WK Rating", val: "92 ★" },
+                    { label: "Form", val: "Elegant" }
+                ]
+            },
+            {
+                name: "Mohammed Shami", role: "Bowler", origin: "IND", isOverseas: false, price: 2.0, set: "Fast Bowlers",
+                ovr: 93, tag: "🎯 Purple Cap Winner & Seam King",
+                runs: 78, wickets: 127, sr: 88.0, econ: 8.44,
+                stats: [
+                    { label: "Matches", val: "110" },
+                    { label: "Wickets", val: "127" },
+                    { label: "Economy", val: "8.44" },
+                    { label: "Bowl Avg", val: "26.8" },
+                    { label: "Best Bowl", val: "4/11" },
+                    { label: "PP Wkts", val: "61" },
+                    { label: "Bowl Rating", val: "93 ★" },
+                    { label: "Form", val: "Lethal Seam" }
+                ]
+            },
+            {
+                name: "Nicholas Pooran", role: "Wicket Keeper", origin: "WI", isOverseas: true, price: 2.0, set: "Keepers",
+                ovr: 93, tag: "🚀 Middle Order Rocket (162.3 SR)",
+                runs: 1769, wickets: 0, sr: 162.3, econ: 0,
+                stats: [
+                    { label: "Matches", val: "76" },
+                    { label: "Runs", val: "1,769" },
+                    { label: "Avg", val: "32.7" },
+                    { label: "SR", val: "162.3" },
+                    { label: "50s", val: "9" },
+                    { label: "Sixes", val: "117" },
+                    { label: "WK Rating", val: "93 ★" },
+                    { label: "Form", val: "Clean Striker" }
+                ]
+            },
+            {
+                name: "Trent Boult", role: "Bowler", origin: "NZ", isOverseas: true, price: 2.0, set: "Fast Bowlers",
+                ovr: 93, tag: "⚡ Most 1st-Over Wickets in IPL History",
+                runs: 45, wickets: 121, sr: 75.0, econ: 8.29,
+                stats: [
+                    { label: "Matches", val: "104" },
+                    { label: "Wickets", val: "121" },
+                    { label: "Economy", val: "8.29" },
+                    { label: "Bowl Avg", val: "26.5" },
+                    { label: "Best Bowl", val: "4/18" },
+                    { label: "1st Over Wkts", val: "28" },
+                    { label: "Bowl Rating", val: "93 ★" },
+                    { label: "Form", val: "Swinging King" }
+                ]
+            },
+            {
+                name: "Yuzvendra Chahal", role: "Bowler", origin: "IND", isOverseas: false, price: 2.0, set: "Spinners",
+                ovr: 96, tag: "👑 #1 All-Time Wicket Taker in IPL History (205 Wickets)",
+                runs: 43, wickets: 205, sr: 50.0, econ: 7.66,
+                stats: [
+                    { label: "Matches", val: "160" },
+                    { label: "Wickets", val: "205" },
+                    { label: "Economy", val: "7.66" },
+                    { label: "Bowl Avg", val: "22.4" },
+                    { label: "Best Bowl", val: "5/40" },
+                    { label: "Hat-tricks", val: "1" },
+                    { label: "Bowl Rating", val: "97 ★" },
+                    { label: "Form", val: "Legendary" }
+                ]
+            },
+            {
+                name: "Axar Patel", role: "All Rounder", origin: "IND", isOverseas: false, price: 2.0, set: "All-Rounders",
+                ovr: 91, tag: "🔒 Ultra Economical Spin & Hard Hitter",
+                runs: 1653, wickets: 123, sr: 130.8, econ: 7.24,
+                stats: [
+                    { label: "Matches", val: "150" },
+                    { label: "Runs", val: "1,653" },
+                    { label: "Wickets", val: "123" },
+                    { label: "Economy", val: "7.24" },
+                    { label: "Bat SR", val: "130.8" },
+                    { label: "Best Bowl", val: "4/21" },
+                    { label: "AR Rating", val: "91 ★" },
+                    { label: "Form", val: "Dependable" }
+                ]
+            },
+            {
+                name: "Rinku Singh", role: "Batsman", origin: "IND", isOverseas: false, price: 1.5, set: "Batsmen",
+                ovr: 90, tag: "🔥 5 Consecutive Sixes Miracle Finisher",
+                runs: 893, wickets: 0, sr: 143.3, econ: 0,
+                stats: [
+                    { label: "Matches", val: "45" },
+                    { label: "Runs", val: "893" },
+                    { label: "Avg", val: "30.8" },
+                    { label: "SR", val: "143.3" },
+                    { label: "Death SR", val: "186.4" },
+                    { label: "50s", val: "4" },
+                    { label: "Bat Rating", val: "90 ★" },
+                    { label: "Form", val: "Fearless" }
+                ]
+            },
+            {
+                name: "Arshdeep Singh", role: "Bowler", origin: "IND", isOverseas: false, price: 1.5, set: "Fast Bowlers",
+                ovr: 90, tag: "🎯 Left-Arm Death Over Specialist",
+                runs: 25, wickets: 76, sr: 65.0, econ: 8.74,
+                stats: [
+                    { label: "Matches", val: "65" },
+                    { label: "Wickets", val: "76" },
+                    { label: "Economy", val: "8.74" },
+                    { label: "Bowl Avg", val: "26.9" },
+                    { label: "Best Bowl", val: "5/32" },
+                    { label: "Death Econ", val: "8.90" },
+                    { label: "Bowl Rating", val: "90 ★" },
+                    { label: "Form", val: "Pinpoint" }
+                ]
+            },
+            {
+                name: "Kuldeep Yadav", role: "Bowler", origin: "IND", isOverseas: false, price: 1.5, set: "Spinners",
+                ovr: 93, tag: "🌀 Left-Arm Wrist Spin Wizard",
+                runs: 145, wickets: 87, sr: 85.0, econ: 8.01,
+                stats: [
+                    { label: "Matches", val: "84" },
+                    { label: "Wickets", val: "87" },
+                    { label: "Economy", val: "8.01" },
+                    { label: "Bowl Avg", val: "26.2" },
+                    { label: "Best Bowl", val: "4/14" },
+                    { label: "Dot %", val: "44%" },
+                    { label: "Bowl Rating", val: "93 ★" },
+                    { label: "Form", val: "Unplayable" }
+                ]
+            },
+            {
+                name: "David Warner", role: "Batsman", origin: "AUS", isOverseas: true, price: 2.0, set: "Batsmen",
+                ovr: 95, tag: "🏆 3x Orange Cap Winner & 6,500+ IPL Runs",
+                runs: 6565, wickets: 0, sr: 139.7, econ: 0,
+                stats: [
+                    { label: "Matches", val: "184" },
+                    { label: "Runs", val: "6,565" },
+                    { label: "Avg", val: "40.5" },
+                    { label: "SR", val: "139.7" },
+                    { label: "100s / 50s", val: "4 / 62" },
+                    { label: "High Score", val: "126" },
+                    { label: "Bat Rating", val: "96 ★" },
+                    { label: "Form", val: "All-Time Great" }
+                ]
+            },
+            {
+                name: "Sam Curran", role: "All Rounder", origin: "ENG", isOverseas: true, price: 2.0, set: "All-Rounders",
+                ovr: 89, tag: "⚡ T20 World Cup POTT & Clutch Swing Bowler",
+                runs: 883, wickets: 58, sr: 138.4, econ: 9.40,
+                stats: [
+                    { label: "Matches", val: "59" },
+                    { label: "Runs", val: "883" },
+                    { label: "Wickets", val: "58" },
+                    { label: "Bat SR", val: "138.4" },
+                    { label: "50s", val: "4" },
+                    { label: "Best Bowl", val: "4/11" },
+                    { label: "AR Rating", val: "89 ★" },
+                    { label: "Form", val: "Competitive" }
+                ]
+            },
+            {
+                name: "Kagiso Rabada", role: "Bowler", origin: "SA", isOverseas: true, price: 2.0, set: "Fast Bowlers",
+                ovr: 93, tag: "⚡ Purple Cap Winner & 150+ km/h Express Pace",
+                runs: 186, wickets: 117, sr: 104.0, econ: 8.42,
+                stats: [
+                    { label: "Matches", val: "80" },
+                    { label: "Wickets", val: "117" },
+                    { label: "Economy", val: "8.42" },
+                    { label: "Bowl Avg", val: "20.8" },
+                    { label: "Best Bowl", val: "4/21" },
+                    { label: "Strike Rate", val: "14.8" },
+                    { label: "Bowl Rating", val: "94 ★" },
+                    { label: "Form", val: "Fiery" }
+                ]
+            }
+        ];
+
+        // Participating Franchises (ONLY HUMAN CANDIDATES WHO JOINED)
+        const franchises = [];
+
+        // User Session State
+        let currentUser = {
+            isHost: false,
+            name: "",
+            team: null
+        };
+
+        let currentPlayerIndex = 0;
+        let currentBidAmount = 0;
+        let leadingCandidate = null;
+        const HAMMER_DURATION = 30; // 30 seconds
+        let timerCountdown = HAMMER_DURATION;
+        let timerInterval = null;
+        let isTimerPaused = false;
+        let selectedSquadTab = 0;
+        let hostPin = "1234";
+
+        function formatTime(totalSeconds) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // STATS-BASED CHAMPIONSHIP SCORING ENGINE
+        function calculateTeamPerformanceScore(squad) {
+            if (squad.length === 0) {
+                return { totalScore: 0, avgOvr: 0, totalRuns: 0, totalWickets: 0, avgSr: 0, avgEcon: 0 };
+            }
+
+            const avgOvr = squad.reduce((sum, p) => sum + (p.ovr || 85), 0) / squad.length;
+            const totalRuns = squad.reduce((sum, p) => sum + (p.runs || 0), 0);
+            const totalWickets = squad.reduce((sum, p) => sum + (p.wickets || 0), 0);
+
+            const battingUnits = squad.filter(p => p.sr > 0);
+            const avgSr = battingUnits.length > 0 ? battingUnits.reduce((sum, p) => sum + p.sr, 0) / battingUnits.length : 0;
+
+            const bowlingUnits = squad.filter(p => p.econ > 0);
+            const avgEcon = bowlingUnits.length > 0 ? bowlingUnits.reduce((sum, p) => sum + p.econ, 0) / bowlingUnits.length : 0;
+
+            // Completion Bonus: Full 11 players gets +5 bonus points
+            const completionBonus = squad.length === 11 ? 5 : (squad.length * 0.4);
+
+            // Scoring Breakdown:
+            // 60% Weight: Star Ratings (OVR)
+            // 20% Weight: Run Production & Batting SR
+            // 20% Weight: Wicket Tally & Bowling Econ
+            const runMetric = Math.min(20, (totalRuns / 24000) * 15 + (avgSr >= 140 ? 5 : 2));
+            const bowlMetric = Math.min(20, (totalWickets / 600) * 15 + (avgEcon > 0 && avgEcon <= 8.0 ? 5 : 2));
+            const compositeScore = Math.round(((avgOvr * 0.6) + runMetric + bowlMetric + completionBonus) * 10) / 10;
+
+            return {
+                totalScore: compositeScore,
+                avgOvr: Math.round(avgOvr * 10) / 10,
+                totalRuns,
+                totalWickets,
+                avgSr: Math.round(avgSr * 10) / 10,
+                avgEcon: Math.round(avgEcon * 10) / 10
+            };
+        }
+
+        // Elements
+        const lockGateScreen = document.getElementById("lockGateScreen");
+        const roomAccessInput = document.getElementById("roomAccessInput");
+        const lockGateError = document.getElementById("lockGateError");
+
+        const lobbyScreen = document.getElementById("lobbyScreen");
+        const auctionArena = document.getElementById("auctionArena");
+        const tabCandidateRole = document.getElementById("tabCandidateRole");
+        const tabHostRole = document.getElementById("tabHostRole");
+        const candidateLoginForm = document.getElementById("candidateLoginForm");
+        const hostLoginForm = document.getElementById("hostLoginForm");
+
+        const candName = document.getElementById("candName");
+        const candPhone = document.getElementById("candPhone");
+        const candTeam = document.getElementById("candTeam");
+        const candError = document.getElementById("candError");
+
+        const hostName = document.getElementById("hostName");
+        const hostPinInput = document.getElementById("hostPin");
+        const hostError = document.getElementById("hostError");
+
+        const candidatesList = document.getElementById("candidatesList");
+        const candidateCount = document.getElementById("candidateCount");
+        const userRoleBadge = document.getElementById("userRoleBadge");
+        const hostControlDeck = document.getElementById("hostControlDeck");
+        const candidateNotice = document.getElementById("candidateNotice");
+        const paddleInstructions = document.getElementById("paddleInstructions");
+        const pauseTimerBtn = document.getElementById("pauseTimerBtn");
+
+        const leaderboardGrid = document.getElementById("leaderboardGrid");
+        const leaderHighlight = document.getElementById("leaderHighlight");
+
+        const playerName = document.getElementById("playerName");
+        const playerSubText = document.getElementById("playerSubText");
+        const playerOriginTag = document.getElementById("playerOriginTag");
+        const playerRoleTag = document.getElementById("playerRoleTag");
+        const playerSetTag = document.getElementById("playerSetTag");
+        const playerOvr = document.getElementById("playerOvr");
+        const playerSpecialBadge = document.getElementById("playerSpecialBadge");
+        const playerRoleLabel = document.getElementById("playerRoleLabel");
+        const statsGrid = document.getElementById("statsGrid");
+
+        const basePrice = document.getElementById("basePrice");
+        const currentBid = document.getElementById("currentBid");
+        const leadingTeam = document.getElementById("leadingTeam");
+        const timerSeconds = document.getElementById("timerSeconds");
+        const timerBar = document.getElementById("timerBar");
+        const timerStatus = document.getElementById("timerStatus");
+
+        const feedBox = document.getElementById("feedBox");
+        const paddlesGrid = document.getElementById("paddlesGrid");
+        const franchiseTabs = document.getElementById("franchiseTabs");
+        const squadDisplay = document.getElementById("squadDisplay");
+        const auctionProgressCounter = document.getElementById("auctionProgressCounter");
+
+        // Live Feed Logger
+        function logFeed(msg, type) {
+            const entry = document.createElement("div");
+            entry.className = "feed-entry" + (type ? " " + type : "");
+            entry.textContent = msg;
+            feedBox.insertBefore(entry, feedBox.firstChild);
+        }
+
+        // CHECK INVITATION ACCESS ON PAGE LOAD
+        function checkInvitationAccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeFromUrl = urlParams.get("code") || urlParams.get("access") || urlParams.get("pass");
+
+            if (codeFromUrl === ROOM_ACCESS_CODE || sessionStorage.getItem("ipl_unlocked") === "true") {
+                unlockRoom();
+            } else {
+                lockGateScreen.style.display = "block";
+                lobbyScreen.style.display = "none";
+                auctionArena.style.display = "none";
+            }
+        }
+
+        function verifyRoomAccess() {
+            const code = roomAccessInput.value.trim();
+            if (code === ROOM_ACCESS_CODE) {
+                unlockRoom();
+            } else {
+                lockGateError.style.display = "block";
+            }
+        }
+
+        function unlockRoom() {
+            sessionStorage.setItem("ipl_unlocked", "true");
+            isRoomUnlocked = true;
+            lockGateScreen.style.display = "none";
+            lobbyScreen.style.display = "block";
+            renderLobbyTable();
+        }
+
+        // COPY PRIVATE INVITE LINK
+        function copyPrivateInviteLink() {
+            const origin = window.location.origin;
+            const pathname = window.location.pathname;
+            const inviteUrl = `${origin}${pathname}?code=${ROOM_ACCESS_CODE}`;
+
+            navigator.clipboard.writeText(inviteUrl).then(() => {
+                alert(`✅ Private Invite Link copied to clipboard!\n\n${inviteUrl}\n\nSend this link only to candidates you want to invite! They will get automatic access.`);
+            }).catch(() => {
+                prompt("Copy this private invite link to send to your candidates:", inviteUrl);
+            });
+        }
+
+        // SWITCH LOGIN TAB
+        function switchLoginMode(mode) {
+            if (mode === "HOST") {
+                tabHostRole.classList.add("active");
+                tabCandidateRole.classList.remove("active");
+                hostLoginForm.style.display = "block";
+                candidateLoginForm.style.display = "none";
+            } else {
+                tabCandidateRole.classList.add("active");
+                tabHostRole.classList.remove("active");
+                candidateLoginForm.style.display = "block";
+                hostLoginForm.style.display = "none";
+            }
+        }
+
+        // ADD CANDIDATE TO THE ROSTER WITHOUT ENTERING IMMEDIATELY
+        function addCandidateToRoom() {
+            const name = candName.value.trim();
+            const phone = candPhone.value.trim().replace(/\D/g, "");
+            const team = candTeam.value;
+            const teamFullName = FRANCHISE_NAMES[team] || team;
+
+            if (name.length < 2 || phone.length !== 10) {
+                candError.style.display = "block";
+                return;
+            }
+            candError.style.display = "none";
+
+            if (franchises.some(f => f.team === team)) {
+                alert(`⚠️ ${teamFullName} (${team}) has already been selected by another candidate! Please choose another franchise.`);
+                return;
+            }
+
+            franchises.push({
+                id: Date.now() + Math.random(),
+                name,
+                phone,
+                team,
+                teamLabel: `${teamFullName} (${team})`,
+                purse: 100.0,
+                spent: 0,
+                squad: []
+            });
+
+            candName.value = "";
+            candPhone.value = "";
+            renderLobbyTable();
+            alert(`✅ Candidate ${name} registered for ${team}!`);
+        }
+
+        // LOGIN AS CANDIDATE & ENTER AUCTION ROOM
+        function loginAndEnterAuction() {
+            const name = candName.value.trim();
+            const phone = candPhone.value.trim().replace(/\D/g, "");
+            const team = candTeam.value;
+            const teamFullName = FRANCHISE_NAMES[team] || team;
+
+            if (name.length < 2 || phone.length !== 10) {
+                candError.style.display = "block";
+                return;
+            }
+            candError.style.display = "none";
+
+            let existing = franchises.find(f => f.team === team);
+            if (existing) {
+                existing.name = name;
+                existing.phone = phone;
+            } else {
+                franchises.push({
+                    id: Date.now(),
+                    name,
+                    phone,
+                    team,
+                    teamLabel: `${teamFullName} (${team})`,
+                    purse: 100.0,
+                    spent: 0,
+                    squad: []
+                });
+            }
+
+            currentUser = {
+                isHost: false,
+                name,
+                team
+            };
+
+            enterAuctionRoom();
+        }
+
+        // LOGIN AS HOST (YOU)
+        function loginHost() {
+            const pin = hostPinInput.value.trim();
+            const name = hostName.value.trim() || "Auctioneer";
+
+            if (pin !== hostPin) {
+                hostError.style.display = "block";
+                return;
+            }
+            hostError.style.display = "none";
+
+            currentUser = {
+                isHost: true,
+                name,
+                team: null
+            };
+
+            enterAuctionRoom();
+        }
+
+        function removeCandidate(index) {
+            franchises.splice(index, 1);
+            renderLobbyTable();
+        }
+
+        function enterAuctionRoom() {
+            if (franchises.length === 0 && !currentUser.isHost) {
+                alert("Please register at least one candidate before entering the auction arena!");
+                return;
+            }
+
+            lobbyScreen.style.display = "none";
+            auctionArena.style.display = "block";
+
+            if (currentUser.isHost) {
+                userRoleBadge.className = "badge badge-host";
+                userRoleBadge.innerHTML = `👑 Host: ${currentUser.name} (Full Control)`;
+                hostControlDeck.style.display = "block";
+                candidateNotice.style.display = "none";
+                paddleInstructions.textContent = "Host controls gavel & timer. Real candidates bid!";
+            } else {
+                userRoleBadge.className = "badge badge-bidder";
+                userRoleBadge.innerHTML = `🏏 Bidder: ${currentUser.name} (${currentUser.team})`;
+                hostControlDeck.style.display = "none";
+                candidateNotice.style.display = "block";
+                paddleInstructions.textContent = `You can only bid for ${currentUser.team}`;
+            }
+
+            renderPaddles();
+            renderFranchiseTabs();
+            updateLiveLeaderboard();
+            loadPlayer(currentPlayerIndex);
+            startHammerCountdown();
+        }
+
+        function logoutToLobby() {
+            if (confirm("Return to Lobby? Current auction session is saved.")) {
+                clearInterval(timerInterval);
+                lobbyScreen.style.display = "block";
+                auctionArena.style.display = "none";
+                renderLobbyTable();
+            }
+        }
+
+        function renderLobbyTable() {
+            candidateCount.textContent = `${franchises.length} Registered Candidate(s)`;
+
+            if (franchises.length === 0) {
+                candidatesList.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: #64748b; padding: 18px;">
+              No candidates joined yet. Enter candidate details above or share the private link to invite managers!
+            </td>
+          </tr>
+        `;
+                return;
+            }
+
+            candidatesList.innerHTML = franchises.map((f, i) => `
+        <tr>
+          <td><span class="badge badge-team">${f.team}</span> <strong>${f.teamLabel.split('(')[0]}</strong></td>
+          <td>👤 ${f.name}</td>
+          <td>📞 +91 ${f.phone}</td>
+          <td style="color: #15803d; font-weight: bold;">₹${f.purse.toFixed(2)} Cr</td>
+          <td>
+            <button type="button" class="btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeCandidate(${i})">
+              Remove
+            </button>
+          </td>
+        </tr>
+      `).join("");
+        }
+
+        // UPDATE LIVE LEADERBOARD (STATS-BASED STANDINGS)
+        function updateLiveLeaderboard() {
+            if (franchises.length === 0) {
+                leaderboardGrid.innerHTML = `<div style="color: #94a3b8; font-size: 13px;">No candidates registered yet.</div>`;
+                leaderHighlight.textContent = "🥇 Leader: None";
+                return;
+            }
+
+            // Rank teams by Playing 11 statistical score
+            const rankedTeams = franchises.map(f => {
+                const perf = calculateTeamPerformanceScore(f.squad);
+                return {
+                    ...f,
+                    perf
+                };
+            }).sort((a, b) => b.perf.totalScore - a.perf.totalScore);
+
+            const leader = rankedTeams[0];
+            if (leader && leader.perf.totalScore > 0) {
+                leaderHighlight.innerHTML = `🥇 <strong>Current #1:</strong> ${leader.team} (${leader.name}) — <strong>${leader.perf.totalScore} Pts</strong> (${leader.squad.length}/11 Players)`;
+            } else {
+                leaderHighlight.innerHTML = `🥇 <strong>Leader:</strong> Awaiting first player purchases`;
+            }
+
+            leaderboardGrid.innerHTML = rankedTeams.map((f, idx) => `
+        <div class="leaderboard-card ${idx === 0 && f.perf.totalScore > 0 ? 'rank-1' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <strong>#${idx + 1} ${f.team} (${f.name.split(' ')[0]})</strong>
+            <span style="font-weight:900; color:${idx === 0 ? '#facc15' : '#38bdf8'}; font-size:14px;">
+              ${f.perf.totalScore} Pts
+            </span>
+          </div>
+          <div style="font-size:11px; color:#cbd5e1;">
+            XI: <strong>${f.squad.length}/11</strong> | Rating: <strong>${f.perf.avgOvr > 0 ? f.perf.avgOvr + '★' : '—'}</strong>
+          </div>
+          <div style="font-size:11px; color:#94a3b8; margin-top:2px;">
+            Runs: <strong>${f.perf.totalRuns.toLocaleString()}</strong> | Wkts: <strong>${f.perf.totalWickets}</strong>
+          </div>
+        </div>
+      `).join("");
+        }
+
+        // LOAD PLAYER WITH STATS
+        function loadPlayer(index) {
+            if (index >= players.length) {
+                finishAuction();
+                return;
+            }
+
+            const player = players[index];
+            currentBidAmount = player.price;
+            leadingCandidate = null;
+
+            playerName.textContent = player.name;
+            playerSubText.textContent = `${player.role} • ${player.isOverseas ? "Overseas (" + player.origin + ")" : "Indian"}`;
+            playerOriginTag.textContent = player.isOverseas ? `✈️ ${player.origin}` : `🇮🇳 IND`;
+            playerRoleTag.textContent = player.role.toUpperCase();
+            playerSetTag.textContent = player.set.toUpperCase();
+            playerOvr.textContent = `★ ${player.ovr} OVR`;
+            playerSpecialBadge.textContent = player.tag;
+            playerRoleLabel.textContent = player.role.toUpperCase();
+
+            statsGrid.innerHTML = player.stats.map(s => `
+        <div class="stat-chip">
+          <span>${s.label}</span>
+          <strong>${s.val}</strong>
+        </div>
+      `).join("");
+
+            basePrice.textContent = `₹${player.price.toFixed(2)} Cr`;
+            currentBid.textContent = `₹${currentBidAmount.toFixed(2)} Cr`;
+            leadingTeam.textContent = "None";
+            leadingTeam.style.color = "#94a3b8";
+
+            auctionProgressCounter.textContent = `Player ${index + 1} of ${players.length}`;
+            logFeed(`🔔 [${player.set.toUpperCase()}] ${player.name} (${player.role}, ${player.ovr} OVR) on the hammer! Base: ₹${player.price.toFixed(2)} Cr.`);
+
+            resetHammerCountdown();
+            renderPaddles();
+        }
+
+        // PLACE BID (FOR REAL HUMAN CANDIDATES ONLY)
+        function placeBid(franchiseId) {
+            const candidate = franchises.find(f => f.id === franchiseId);
+            if (!candidate) return;
+
+            // PERMISSION CHECK: Candidate can ONLY bid for their own registered team!
+            if (!currentUser.isHost && candidate.team !== currentUser.team) {
+                alert(`🔒 Access Denied!\nYou are logged in as ${currentUser.team} (${currentUser.name}). You cannot place bids for ${candidate.team}.`);
+                return;
+            }
+
+            const player = players[currentPlayerIndex];
+
+            const overseasCount = candidate.squad.filter(p => p.isOverseas).length;
+            if (player.isOverseas && overseasCount >= 4) {
+                alert(`❌ Overseas Limit Full!\n${candidate.team} already has 4 overseas players (maximum allowed in a Playing XI).`);
+                return;
+            }
+
+            if (candidate.squad.length >= 11) {
+                alert(`❌ Playing XI Full!\n${candidate.team} has completed its full 11-player squad.`);
+                return;
+            }
+
+            let newBid = leadingCandidate === null ? player.price : Math.round((currentBidAmount + 0.5) * 100) / 100;
+
+            if (newBid > candidate.purse) {
+                alert(`❌ Insufficient Purse!\n${candidate.team} only has ₹${candidate.purse.toFixed(2)} Cr remaining.`);
+                return;
+            }
+
+            const neededForMin = Math.max(0, 11 - (candidate.squad.length + 1));
+            const minReserve = neededForMin * 1.5;
+            if (candidate.purse - newBid < minReserve) {
+                const proceed = confirm(
+                    `⚠️ PURSE WARNING for ${candidate.team}:\n` +
+                    `Bidding ₹${newBid.toFixed(2)} Cr leaves ₹${(candidate.purse - newBid).toFixed(2)} Cr.\n` +
+                    `You still need ${neededForMin} more player(s) to complete your 11-player Playing XI.\n` +
+                    `Continue bid?`
+                );
+                if (!proceed) return;
+            }
+
+            currentBidAmount = newBid;
+            leadingCandidate = candidate;
+
+            currentBid.textContent = `₹${currentBidAmount.toFixed(2)} Cr`;
+            leadingTeam.textContent = `${candidate.team} (${candidate.name})`;
+            leadingTeam.style.color = "#4ade80";
+
+            logFeed(`🏏 BID: ${candidate.team} (${candidate.name}) bids ₹${currentBidAmount.toFixed(2)} Cr for ${player.name} (${player.ovr} OVR)!`, "bid");
+
+            resetHammerCountdown();
+            renderPaddles();
+        }
+
+        // HAMMER TIMER (30 SECONDS)
+        function startHammerCountdown() {
+            clearInterval(timerInterval);
+            if (isTimerPaused) return;
+
+            timerInterval = setInterval(() => {
+                timerCountdown--;
+                if (timerCountdown < 0) timerCountdown = 0;
+
+                timerSeconds.innerHTML = `<strong>${formatTime(timerCountdown)}</strong>`;
+                const percentage = (timerCountdown / HAMMER_DURATION) * 100;
+                timerBar.style.width = `${percentage}%`;
+
+                if (timerCountdown <= 5 && timerCountdown > 0) {
+                    timerBar.style.backgroundColor = "#ef4444";
+                    timerStatus.textContent = timerCountdown <= 3 ? "Going twice..." : "Going once...";
+                } else if (timerCountdown <= 15) {
+                    timerBar.style.backgroundColor = "#f59e0b";
+                    timerStatus.textContent = "Final 15s Window!";
+                } else {
+                    timerBar.style.backgroundColor = "#22c55e";
+                    timerStatus.textContent = "Hammer Countdown (30s)";
+                }
+
+                if (timerCountdown === 0) {
+                    clearInterval(timerInterval);
+                    if (leadingCandidate) {
+                        sellPlayerToHighestBidder();
+                    } else {
+                        passPlayerUnsold();
+                    }
+                }
+            }, 1000);
+        }
+
+        function resetHammerCountdown() {
+            timerCountdown = HAMMER_DURATION;
+            timerBar.style.width = "100%";
+            timerBar.style.backgroundColor = "#22c55e";
+            timerSeconds.innerHTML = `<strong>${formatTime(HAMMER_DURATION)}</strong>`;
+            timerStatus.textContent = "Hammer Countdown (30s)";
+            isTimerPaused = false;
+            pauseTimerBtn.textContent = "⏸ Pause Timer";
+            startHammerCountdown();
+        }
+
+        // HOST ONLY: Pause / Resume Timer
+        function toggleTimer() {
+            if (!currentUser.isHost) return;
+            if (isTimerPaused) {
+                isTimerPaused = false;
+                pauseTimerBtn.textContent = "⏸ Pause Timer";
+                startHammerCountdown();
+                logFeed("▶ Host resumed the hammer clock.", "info");
+            } else {
+                isTimerPaused = true;
+                clearInterval(timerInterval);
+                pauseTimerBtn.textContent = "▶ Resume Timer";
+                timerStatus.textContent = "Timer Paused by Host";
+                logFeed("⏸ Host paused the hammer clock.", "info");
+            }
+        }
+
+        // HOST ONLY: Sell Player
+        function sellPlayerToHighestBidder() {
+            clearInterval(timerInterval);
+            const player = players[currentPlayerIndex];
+
+            if (!leadingCandidate) {
+                alert("No bid placed yet! Either pass player or place a bid.");
+                startHammerCountdown();
+                return;
+            }
+
+            leadingCandidate.squad.push({
+                name: player.name,
+                role: player.role,
+                origin: player.origin,
+                isOverseas: player.isOverseas,
+                price: currentBidAmount,
+                set: player.set,
+                ovr: player.ovr,
+                tag: player.tag,
+                runs: player.runs,
+                wickets: player.wickets,
+                sr: player.sr,
+                econ: player.econ,
+                stats: player.stats
+            });
+
+            leadingCandidate.purse = Math.round((leadingCandidate.purse - currentBidAmount) * 100) / 100;
+            leadingCandidate.spent = Math.round((leadingCandidate.spent + currentBidAmount) * 100) / 100;
+
+            const perf = calculateTeamPerformanceScore(leadingCandidate.squad);
+            logFeed(`🔨 SOLD! ${player.name} (${player.ovr} OVR) SOLD to ${leadingCandidate.team} (${leadingCandidate.name}) for ₹${currentBidAmount.toFixed(2)} Cr! (Playing XI Score: ${perf.totalScore} Pts)`, "sold");
+
+            updateLiveLeaderboard();
+            renderPaddles();
+            renderFranchiseTabs();
+            renderSquadDisplay();
+
+            currentPlayerIndex++;
+            setTimeout(() => {
+                loadPlayer(currentPlayerIndex);
+            }, 1400);
+        }
+
+        // HOST ONLY: Pass Unsold
+        function passPlayerUnsold() {
+            clearInterval(timerInterval);
+            const player = players[currentPlayerIndex];
+            logFeed(`❌ UNSOLD: ${player.name} (${player.ovr} OVR) went unsold at ₹${player.price.toFixed(2)} Cr.`, "unsold");
+
+            currentPlayerIndex++;
+            setTimeout(() => {
+                loadPlayer(currentPlayerIndex);
+            }, 1000);
+        }
+
+        // DECIDE WINNER BASED ON STATS
+        function decideWinnerAndAnnounce() {
+            if (franchises.length === 0) {
+                alert("No candidates registered in the auction yet.");
+                return;
+            }
+
+            const evaluatedTeams = franchises.map(f => ({
+                ...f,
+                perf: calculateTeamPerformanceScore(f.squad)
+            })).sort((a, b) => b.perf.totalScore - a.perf.totalScore);
+
+            const winner = evaluatedTeams[0];
+
+            let msg = "═══════════════════════════════════════════\n";
+            msg += "🏆 IPL MEGA AUCTION CHAMPIONSHIP DECISION\n";
+            msg += "   (Winner Decided by Playing XI Player Stats)\n";
+            msg += "═══════════════════════════════════════════\n\n";
+
+            if (winner.perf.totalScore === 0) {
+                alert("No players have been bought yet! Buy players to generate Playing XI scores.");
+                return;
+            }
+
+            msg += `👑 WINNER / CHAMPION: ${winner.team} (${winner.name})\n`;
+            msg += `🏅 Winning Playing XI Score: ${winner.perf.totalScore} Points\n`;
+            msg += `⭐ Playing XI Star Rating: ${winner.perf.avgOvr} ★\n`;
+            msg += `🏏 Total Career Runs in XI: ${winner.perf.totalRuns.toLocaleString()} Runs (Avg SR: ${winner.perf.avgSr})\n`;
+            msg += `🎯 Total Wickets in XI: ${winner.perf.totalWickets} Wickets (Avg Econ: ${winner.perf.avgEcon})\n`;
+            msg += `👥 Squad Filled: ${winner.squad.length}/11 Players\n\n`;
+
+            msg += "📊 FULL CHAMPIONSHIP RANKINGS:\n";
+            evaluatedTeams.forEach((team, idx) => {
+                const medal = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : `#${idx + 1}`));
+                msg += `${medal} ${team.team} (${team.name}) — Score: ${team.perf.totalScore} Pts | XI: ${team.squad.length}/11 | ${team.perf.avgOvr}★\n`;
+            });
+
+            msg += "\n🎉 Congratulations to the winning franchise manager!";
+            alert(msg);
+        }
+
+        // RENDER PADDLES ONLY FOR JOINED REAL CANDIDATES
+        function renderPaddles() {
+            const player = players[currentPlayerIndex];
+            const nextBid = leadingCandidate === null ? (player ? player.price : 2) : Math.round((currentBidAmount + 0.5) * 100) / 100;
+
+            if (franchises.length === 0) {
+                paddlesGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 24px; background: #f8fafc; border-radius: 10px; border: 1px dashed #cbd5e1;">
+            No candidates registered in this room yet.<br>
+            <a href="javascript:void(0)" onclick="logoutToLobby()" style="color: #0284c7; font-weight: bold;">Return to Lobby to Add Candidates</a>
+          </div>
+        `;
+                return;
+            }
+
+            paddlesGrid.innerHTML = franchises.map(f => {
+                const isLeading = leadingCandidate && leadingCandidate.id === f.id;
+                const isMyTeam = !currentUser.isHost && f.team === currentUser.team;
+                const overseasCount = f.squad.filter(p => p.isOverseas).length;
+                const cannotAfford = nextBid > f.purse;
+                const overseasBlocked = player && player.isOverseas && overseasCount >= 4;
+                const squadFull = f.squad.length >= 11;
+                const perf = calculateTeamPerformanceScore(f.squad);
+
+                const isForbiddenTeam = !currentUser.isHost && !isMyTeam;
+
+                let btnText = `🔨 Bid ₹${nextBid.toFixed(2)} Cr`;
+                let btnDisabled = false;
+                let lockClass = "";
+
+                if (isForbiddenTeam) {
+                    btnText = `🔒 Locked (${f.team})`;
+                    btnDisabled = true;
+                    lockClass = "locked";
+                } else if (squadFull) {
+                    btnText = `✅ Playing XI Full (11/11)`;
+                    btnDisabled = true;
+                } else if (isLeading) {
+                    btnText = `✅ Holding Bid (₹${currentBidAmount.toFixed(2)} Cr)`;
+                    btnDisabled = true;
+                } else if (cannotAfford) {
+                    btnText = `⚠️ Purse Low (₹${f.purse.toFixed(2)} Cr)`;
+                    btnDisabled = true;
+                } else if (overseasBlocked) {
+                    btnText = `🚫 OS Limit (4/4)`;
+                    btnDisabled = true;
+                }
+
+                return `
+          <div class="franchise-card ${isLeading ? 'leading' : ''} ${isMyTeam ? 'my-team' : ''}">
+            <h4>
+              <span>
+                <span class="badge badge-team">${f.team}</span> 
+                👤 <strong>${f.name}</strong>
+              </span>
+              ${isMyTeam ? '<span style="color:#2563eb; font-size:11px;">(You)</span>' : ''}
+              ${isLeading ? '<span style="color:#22c55e; font-size:12px;">👑 Leading</span>' : ''}
+            </h4>
+            <div class="franchise-meta">
+              📞 +91 ${f.phone} | Playing XI: <strong>${f.squad.length}/11</strong> | OS: <strong>${overseasCount}/4</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="franchise-strength">🏆 Score: ${perf.totalScore} Pts (${perf.avgOvr > 0 ? perf.avgOvr + '★' : '0★'})</span>
+              <span class="franchise-purse">Purse: ₹${f.purse.toFixed(2)} Cr</span>
+            </div>
+            <button 
+              type="button" 
+              class="btn-paddle ${isLeading ? 'holding' : ''} ${lockClass}" 
+              ${btnDisabled ? 'disabled' : ''} 
+              onclick="placeBid(${f.id})"
+            >
+              ${btnText}
+            </button>
+          </div>
+        `;
+            }).join("");
+        }
+
+        function renderFranchiseTabs() {
+            if (franchises.length === 0) {
+                franchiseTabs.innerHTML = "";
+                renderSquadDisplay();
+                return;
+            }
+            franchiseTabs.innerHTML = franchises.map((f, i) => {
+                const perf = calculateTeamPerformanceScore(f.squad);
+                return `
+          <button class="tab-btn ${i === selectedSquadTab ? 'active' : ''}" onclick="selectSquadTab(${i})">
+            👤 ${f.team} (${f.squad.length}/11 • ${perf.totalScore} Pts)
+          </button>
+        `;
+            }).join("");
+            renderSquadDisplay();
+        }
+
+        function selectSquadTab(idx) {
+            selectedSquadTab = idx;
+            renderFranchiseTabs();
+        }
+
+        function renderSquadDisplay() {
+            if (franchises.length === 0) {
+                squadDisplay.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px;">No candidates registered yet.</div>`;
+                return;
+            }
+            const f = franchises[selectedSquadTab] || franchises[0];
+            if (!f) return;
+
+            const overseasCount = f.squad.filter(p => p.isOverseas).length;
+            const batsmen = f.squad.filter(p => p.role === "Batsman").length;
+            const bowlers = f.squad.filter(p => p.role === "Bowler").length;
+            const allRounders = f.squad.filter(p => p.role === "All Rounder").length;
+            const wk = f.squad.filter(p => p.role === "Wicket Keeper").length;
+            const perf = calculateTeamPerformanceScore(f.squad);
+
+            const isCompliant = (
+                f.squad.length === 11 && overseasCount <= 4 &&
+                batsmen >= 3 && bowlers >= 3 && allRounders >= 1 && wk >= 1
+            );
+
+            let headerHtml = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+          <div>
+            <strong>${f.teamLabel}</strong> • Manager: <strong>${f.name}</strong> (+91 ${f.phone})
+            <span class="badge badge-winner" style="margin-left: 6px;">XI Score: ${perf.totalScore} Points (${perf.avgOvr}★)</span>
+          </div>
+          <div>
+            <span class="badge" style="background:${isCompliant ? '#dcfce7' : '#fee2e2'}; color:${isCompliant ? '#166534' : '#991b1b'};">
+              ${isCompliant ? '✅ Playing XI Complete (11/11)' : `Playing XI Incomplete (${f.squad.length}/11)`}
+            </span>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #475569; margin-bottom: 10px;">
+          Stats Totals: 🏏 Runs: <strong>${perf.totalRuns.toLocaleString()}</strong> | 🎯 Wickets: <strong>${perf.totalWickets}</strong> | Avg SR: <strong>${perf.avgSr}</strong> | Avg Econ: <strong>${perf.avgEcon}</strong> | Spent: <strong>₹${f.spent.toFixed(2)} Cr</strong>
+        </div>
+      `;
+
+            if (f.squad.length === 0) {
+                squadDisplay.innerHTML = headerHtml + `<div style="text-align: center; color: #94a3b8; padding: 20px;">No players bought yet.</div>`;
+                return;
+            }
+
+            const listHtml = f.squad.map((p, idx) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px;">
+          <div>
+            <span class="badge badge-rating" style="margin-right:6px;">★ ${p.ovr}</span>
+            <span>${p.isOverseas ? '✈️' : '🇮🇳'}</span>
+            <strong>${p.name}</strong> 
+            <span style="color:#64748b; font-size:12px;">(${p.role} • ${p.origin})</span>
+            <div style="font-size:11px; color:#0284c7; margin-top:2px;">
+              ${p.tag} • Runs: ${p.runs ? p.runs.toLocaleString() : 0} | Wkts: ${p.wickets || 0}
+            </div>
+          </div>
+          <div style="font-weight: bold; color: #15803d; font-size: 14px;">₹${p.price.toFixed(2)} Cr</div>
+        </div>
+      `).join("");
+
+            squadDisplay.innerHTML = headerHtml + listHtml;
+        }
+
+        function finishAuction() {
+            clearInterval(timerInterval);
+            playerName.textContent = "Auction Concluded!";
+            playerSubText.textContent = "All marquee and category players auctioned.";
+            basePrice.textContent = "—";
+            currentBid.textContent = "—";
+            leadingTeam.textContent = "Completed";
+
+            logFeed("🏆 IPL MEGA AUCTION OFFICIALLY CONCLUDED! Determining Championship Winner...", "sold");
+            decideWinnerAndAnnounce();
+        }
+
+        // ═══════════════════════════════════════════════
+        // HOST-ONLY EXTENDED CONTROLS (New)
+        // ═══════════════════════════════════════════════
+
+        // Populate the bid-override franchise dropdown whenever the deck is shown
+        function refreshHostBidDropdown() {
+            const sel = document.getElementById('hostBidTeamSelect');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">— Select Franchise —</option>' +
+                franchises.map(f => `<option value="${f.id}">${f.team} – ${f.name} (₹${f.purse.toFixed(2)} Cr left)</option>`).join('');
+        }
+
+        // Called when host enters the arena so the dropdown is ready
+        const _origEnterAuctionRoom = enterAuctionRoom;
+        enterAuctionRoom = function () {
+            _origEnterAuctionRoom();
+            refreshHostBidDropdown();
+        };
+
+        // Extend timer by N seconds (clamps to 120s max)
+        function extendTimer(seconds) {
+            if (!currentUser.isHost) return;
+            timerCountdown = Math.min(120, timerCountdown + seconds);
+            timerSeconds.innerHTML = `<strong>${formatTime(timerCountdown)}</strong>`;
+            timerBar.style.width = `${(timerCountdown / HAMMER_DURATION) * 100}%`;
+            logFeed(`⏱ Host extended clock by ${seconds}s → ${formatTime(timerCountdown)} remaining.`);
+        }
+
+        // Set the timer to a custom value and restart from it
+        function setCustomTimer() {
+            if (!currentUser.isHost) return;
+            const val = parseInt(document.getElementById('customTimerInput').value, 10);
+            if (isNaN(val) || val < 5 || val > 120) {
+                alert('Please enter a value between 5 and 120 seconds.');
+                return;
+            }
+            clearInterval(timerInterval);
+            timerCountdown = val;
+            isTimerPaused = false;
+            pauseTimerBtn.textContent = '⏸ Pause Timer';
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = '#22c55e';
+            timerSeconds.innerHTML = `<strong>${formatTime(timerCountdown)}</strong>`;
+            timerStatus.textContent = `Custom ${val}s Clock`;
+            startHammerCountdown();
+            logFeed(`⏱ Host set a custom ${val}s hammer clock.`);
+        }
+
+        // Force-place a bid on behalf of a franchise at a specified amount
+        function hostPlaceManualBid() {
+            if (!currentUser.isHost) return;
+            const sel = document.getElementById('hostBidTeamSelect');
+            const amtInput = document.getElementById('hostBidAmount');
+            const franchiseId = parseFloat(sel.value);
+            const amt = parseFloat(amtInput.value);
+
+            if (!sel.value) { alert('Please select a franchise.'); return; }
+            if (isNaN(amt) || amt <= 0) { alert('Please enter a valid bid amount (₹ Cr).'); return; }
+
+            const candidate = franchises.find(f => f.id === franchiseId);
+            if (!candidate) { alert('Franchise not found.'); return; }
+
+            const player = players[currentPlayerIndex];
+            if (!player) { alert('No active player on the block.'); return; }
+
+            if (amt > candidate.purse) {
+                alert(`❌ ${candidate.team} only has ₹${candidate.purse.toFixed(2)} Cr — cannot bid ₹${amt.toFixed(2)} Cr.`);
+                return;
+            }
+            if (candidate.squad.length >= 11) {
+                alert(`❌ ${candidate.team} Playing XI is already full (11/11).`);
+                return;
+            }
+            const overseasCount = candidate.squad.filter(p => p.isOverseas).length;
+            if (player.isOverseas && overseasCount >= 4) {
+                alert(`❌ ${candidate.team} already has 4 overseas players.`);
+                return;
+            }
+
+            currentBidAmount = Math.round(amt * 100) / 100;
+            leadingCandidate = candidate;
+            currentBid.textContent = `₹${currentBidAmount.toFixed(2)} Cr`;
+            leadingTeam.textContent = `${candidate.team} (${candidate.name})`;
+            leadingTeam.style.color = '#4ade80';
+
+            logFeed(`👑 HOST OVERRIDE BID: ${candidate.team} (${candidate.name}) manually placed at ₹${currentBidAmount.toFixed(2)} Cr for ${player.name}!`, 'bid');
+            resetHammerCountdown();
+            renderPaddles();
+            amtInput.value = '';
+            refreshHostBidDropdown();
+        }
+
+        // Go back to re-list the previous player
+        function hostGoToPrevPlayer() {
+            if (!currentUser.isHost) return;
+            if (currentPlayerIndex === 0) { alert('Already at the first player.'); return; }
+            clearInterval(timerInterval);
+            currentPlayerIndex--;
+            loadPlayer(currentPlayerIndex);
+            logFeed(`⬅ Host went back to re-list player #${currentPlayerIndex + 1}: ${players[currentPlayerIndex].name}.`);
+        }
+
+        // Jump to any player by 1-based number
+        function hostJumpToPlayer() {
+            if (!currentUser.isHost) return;
+            const num = parseInt(document.getElementById('jumpPlayerInput').value, 10);
+            if (isNaN(num) || num < 1 || num > players.length) {
+                alert(`Please enter a player number between 1 and ${players.length}.`);
+                return;
+            }
+            clearInterval(timerInterval);
+            currentPlayerIndex = num - 1;
+            loadPlayer(currentPlayerIndex);
+            logFeed(`🔀 Host jumped to player #${num}: ${players[currentPlayerIndex].name}.`);
+            document.getElementById('jumpPlayerInput').value = '';
+        }
+
+        // Re-list the current player from scratch (clears leading bid)
+        function hostRelistCurrentPlayer() {
+            if (!currentUser.isHost) return;
+            clearInterval(timerInterval);
+            leadingCandidate = null;
+            loadPlayer(currentPlayerIndex);
+            logFeed(`🔄 Host re-listed ${players[currentPlayerIndex].name} — bids reset.`);
+        }
+
+        // Override the base price of the current player
+        function hostSetBasePrice() {
+            if (!currentUser.isHost) return;
+            const val = parseFloat(document.getElementById('newBasePriceInput').value);
+            if (isNaN(val) || val < 0.5) { alert('Please enter a valid base price (minimum ₹0.5 Cr).'); return; }
+            const player = players[currentPlayerIndex];
+            if (!player) return;
+
+            player.price = Math.round(val * 100) / 100;
+            currentBidAmount = player.price;
+            leadingCandidate = null;
+
+            basePrice.textContent = `₹${player.price.toFixed(2)} Cr`;
+            currentBid.textContent = `₹${currentBidAmount.toFixed(2)} Cr`;
+            leadingTeam.textContent = 'None';
+            leadingTeam.style.color = '#94a3b8';
+
+            logFeed(`🏷 Host changed ${player.name}'s base price to ₹${player.price.toFixed(2)} Cr. Bids reset.`);
+            renderPaddles();
+            document.getElementById('newBasePriceInput').value = '';
+        }
+
+        // Also refresh the franchise dropdown whenever paddles are re-rendered
+        const _origRenderPaddles = renderPaddles;
+        renderPaddles = function () {
+            _origRenderPaddles();
+            if (currentUser.isHost) refreshHostBidDropdown();
+        };
+
+        // Check invitation access on load
+        checkInvitationAccess();
+    </script>
+</body>
+
+</html>
